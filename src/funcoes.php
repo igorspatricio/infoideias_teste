@@ -15,7 +15,13 @@ class Funcoes
 
      * */
     public function SeculoAno(int $ano): int {
+        $seculo = $ano/100;
         
+        if ($ano % 100 == 0){
+            return $seculo;
+        }
+        
+        return $seculo + 1;
     }
 
     
@@ -37,7 +43,19 @@ class Funcoes
 
      * */
     public function PrimoAnterior(int $numero): int {
-        
+        for ($procuraPrimo = $numero-1; $procuraPrimo > 0; $procuraPrimo--){
+            
+            for($i = $procuraPrimo-1; $i > 1; $i--){
+                if ($procuraPrimo % $i == 0){
+                    break;
+                }
+            }
+            
+            if($i== 1){
+                return $procuraPrimo;
+            }
+        }
+        return 0; /* Sem numeros primos anteriores (entrada 2...)*/
     }
 
 
@@ -66,7 +84,28 @@ class Funcoes
 
      * */
     public function SegundoMaior(array $arr): int {
+        $maior = 0;
+        $segundMaior = 0;
         
+        foreach($arr as $line){
+            foreach($line as $number){
+                if($number > $maior){
+                    /*se o numero for maior que o $maior então 'apaga' o $segundoMaior e troca com o maior*/
+                    $segundoMaior = $number;
+                    
+                    /*troma o maior pelo segundoMaior...*/
+                    $maior = $segundoMaior + $maior;
+                    $segundoMaior = $maior - $segundoMaior;
+                    $maior = $maior - $segundoMaior;
+                }else{
+                   
+                    if($number > $segundoMaior){ /*Caso o numero seja apenas maior que o segundo maior*/
+                        $segundoMaior = $number;
+                    }
+                }
+            }
+        }
+        return $segundoMaior;
     }
 	
 	
@@ -105,8 +144,49 @@ class Funcoes
     [3, 5, 67, 98, 3] true
 
      * */
-    
+                                                    /*Não deveria ser bool? */
 	public function SequenciaCrescente(array $arr): boolean {
+        $arrLen = count($arr) - 1;
+        $ver1 = 1;
+        $ver2 = 1;
+        for ($i = 0, $j = 1; $i < $arrLen; $i++, $j++){
+            /*Encontra o primeiro "erro"*/
+            if($arr[$i] >= $arr[$j]){
+                $iRemoved = $arr;
+                $jRemoved = $arr;
+                
+                
+                /*remove os possiveis elementos que quebram a sequencia*/
+                unset($iRemoved[$i]);
+                $iRemoved = array_values($iRemoved);
+                
+                unset($jRemoved[$j]);
+                $jRemoved = array_values($jRemoved);
+                
+                /*Verifica se a sequencia fica valida com uam das remoções*/
+                for($k= 0; $k < count($iRemoved) - 1; $k++){
+                    if($iRemoved[$k] >= $iRemoved[$k+1]){
+                        $ver1 = 0;
+                        break;
+                    }
+                }
+                
+                for($k= 0; $k < count($jRemoved) - 1; $k++){
+                    if($jRemoved[$k] >= $jRemoved[$k+1]){
+                        $ver2 = 0; 
+                        break;
+                    }
+                }
+                
+                break;
+            }
+        }
         
+    if($ver1 == 1 || $ver2 == 1){
+        return true;
+    }else{
+        return false;
     }
+        
+}
 }
